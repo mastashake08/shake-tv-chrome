@@ -28,7 +28,7 @@
   onMounted(() => {
     player = videojs(videoPlayer.value, { autoplay: true, controls: true });
     player.playlist(playlistPlugin);
-    player.registerPlugin('airplay', airplay);
+    videojs.registerPlugin('airplay', airplay);
     updatePlaylist();
   });
   

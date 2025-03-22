@@ -24,7 +24,7 @@
   const currentPlaylist = ref([]);
   
   async function loadPlaylist() {
-    const playlistUrl = 'https://iptv-org.github.io/iptv/index.m3u';
+    const playlistUrl = 'https://iptv-org.github.io/iptv/categories/movies.m3u';
     const streamsUrl = 'https://iptv-org.github.io/api/streams.json';
     
     try {
