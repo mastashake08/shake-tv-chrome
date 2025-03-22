@@ -24,17 +24,17 @@
   const currentPlaylist = ref([]);
   
   async function loadPlaylist() {
-    const playlistUrl = 'https://iptv-org.github.io/iptv/categories/animation.m3u';
-    const channelsUrl = 'https://iptv-org.github.io/api/channels.json';
+    const playlistUrl = 'https://iptv-org.github.io/iptv/index.m3u';
+    const streamsUrl = 'https://iptv-org.github.io/api/streams.json';
     
     try {
-      const [playlistResponse, channelsResponse] = await Promise.all([
+      const [playlistResponse, streamsResponse] = await Promise.all([
         fetch(playlistUrl),
-        fetch(channelsUrl)
+        fetch(streamsUrl)
       ]);
       
       const playlistText = await playlistResponse.text();
-      const channelsData = await channelsResponse.json();
+      const streamsData = await streamsResponse.json();
   
       // Extract URLs from .m3u file
       const urls = playlistText.match(/https?:\/\/[^\s]+/g) || [];
@@ -47,7 +47,8 @@
       for (const url of httpsUrls) {
         try {
           const res = await fetch(url, { method: 'HEAD' });
-          if (res.ok) validUrls.push(url);
+          if (res.ok && res.statusText == 'OK') validUrls.push(url);
+         
         } catch (e) {
           console.warn(`Invalid URL: ${url}`);
         }
@@ -55,15 +56,14 @@
   
       // Prepare playlist with icons and titles
       videoPlaylist.value = validUrls.map(url => {
-        const channel = channelsData.find(chan => url.includes(chan.id));
+        
+        const channel = streamsData.find(chan => url.includes(chan.url));
         return {
-          title: channel ? channel.name : 'Unknown Channel',
+          title: channel ? channel.channel : 'Unknown Channel',
           icon: channel ? channel.logo : null,
-          sources: [{ src: url, type: 'application/x-mpegURL' }]
+          sources: [{ src: channel.url, type: 'application/x-mpegURL' }]
         };
       });
-  
-      console.log("Valid Streams Loaded:", videoPlaylist.value);
     } catch (error) {
       console.error('Error fetching the playlist:', error);
     }

@@ -15,6 +15,7 @@
   import { onMounted, onBeforeUnmount, ref, watch } from 'vue';
   import videojs from 'video.js';
   import playlistPlugin from 'videojs-playlist';
+  import airplay from '@silvermine/videojs-airplay';
   import 'video.js/dist/video-js.css';
   
   const props = defineProps({
@@ -27,7 +28,7 @@
   onMounted(() => {
     player = videojs(videoPlayer.value, { autoplay: true, controls: true });
     player.playlist(playlistPlugin);
-    console.log(player)
+    player.registerPlugin('airplay', airplay);
     updatePlaylist();
   });
   
